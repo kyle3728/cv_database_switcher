@@ -159,7 +159,7 @@ echo After preparation:
 echo 1. %SelectedVersion% database copied to backup folder
 echo 2. Original Database folder remains intact for Restore CV
 echo 3. Run "Restore CV %SelectedVersion%" to import new client  
-echo 4. Run post_import.bat to complete setup
+echo 4. Run setup_identifiers.bat to complete setup
 echo.
 set /p confirm=Continue with preparation of %SelectedVersion%? Y/N: 
 if /i not "%confirm%"=="Y" (
@@ -183,7 +183,7 @@ if exist "%VersionPath%\Database - %CurrentDatabase%" (
     if errorlevel 1 (
         echo   ERROR: Failed to copy CV database folder
     ) else (
-        echo   ✓ CV database copied to "Database - %CurrentDatabase%"
+        echo   OK CV database copied to "Database - %CurrentDatabase%"
         
         :: Set SQL permissions on copied database files
         echo   Setting SQL permissions on copied database files...
@@ -193,7 +193,7 @@ if exist "%VersionPath%\Database - %CurrentDatabase%" (
                 if errorlevel 1 (
                     echo   Warning: Could not set permissions on %%~nxf
                 ) else (
-                    echo   ✓ Set permissions on %%~nxf
+                    echo   OK Set permissions on %%~nxf
                 )
             )
         )
@@ -215,7 +215,7 @@ if exist "%CommonPath%\Database" (
         if errorlevel 1 (
             echo   ERROR: Failed to copy Common database folder
         ) else (
-            echo   ✓ Common database copied to "Database - !commonCurrentDb!"
+            echo   OK Common database copied to "Database - !commonCurrentDb!"
             
             :: Set SQL permissions on copied Common database files
             echo   Setting SQL permissions on copied Common database files...
@@ -225,7 +225,7 @@ if exist "%CommonPath%\Database" (
                     if errorlevel 1 (
                         echo   Warning: Could not set Common permissions on %%~nxf
                     ) else (
-                        echo   ✓ Set Common permissions on %%~nxf
+                        echo   OK Set Common permissions on %%~nxf
                     )
                 )
             )
@@ -248,7 +248,7 @@ if exist "%S2MPath%\Database" (
         if errorlevel 1 (
             echo   ERROR: Failed to copy S2M database folder
         ) else (
-            echo   ✓ S2M database copied to "Database - !s2mCurrentDb!"
+            echo   OK S2M database copied to "Database - !s2mCurrentDb!"
             
             :: Set SQL permissions on copied S2M database files
             echo   Setting SQL permissions on copied S2M database files...
@@ -258,7 +258,7 @@ if exist "%S2MPath%\Database" (
                     if errorlevel 1 (
                         echo   Warning: Could not set S2M permissions on %%~nxf
                     ) else (
-                        echo   ✓ Set S2M permissions on %%~nxf
+                        echo   OK Set S2M permissions on %%~nxf
                     )
                 )
             )
@@ -266,7 +266,24 @@ if exist "%S2MPath%\Database" (
     )
 )
 
-echo   ✓ Original Database folder remains intact for Restore CV
+:: Remove identifier file so setup_identifiers.bat can detect and reconfigure after restore
+if exist "%VersionPath%\Database\Database_Name.txt" (
+    del "%VersionPath%\Database\Database_Name.txt" >nul 2>&1
+    echo   OK Removed old Database_Name.txt file for fresh setup after restore
+)
+
+:: Also remove from Common and S2M if they exist
+if exist "%CommonPath%\Database\Database_Name.txt" (
+    del "%CommonPath%\Database\Database_Name.txt" >nul 2>&1
+    echo   OK Removed Common Database_Name.txt file
+)
+
+if exist "%S2MPath%\Database\Database_Name.txt" (
+    del "%S2MPath%\Database\Database_Name.txt" >nul 2>&1  
+    echo   OK Removed S2M Database_Name.txt file
+)
+
+echo   OK Original Database folder remains intact for Restore CV
 
 echo.
 
@@ -287,7 +304,7 @@ echo.
 echo Next steps:
 echo 1. Run "Restore CV %SelectedVersion% Settings" from Start Menu
 echo 2. Select your backup file and restore the new client database
-echo 3. Run post_import.bat to set up the new database profile
+echo 3. Run setup_identifiers.bat to set up the new database profile
 echo.
 echo Other CV versions remain active and untouched.
 echo The new database will appear in cv_switch.bat after restoration.

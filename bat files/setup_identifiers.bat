@@ -58,62 +58,45 @@ for /d %%i in ("%CVPath%\CV 20*") do (
 echo.
 if !count! equ 0 (
     echo All Cabinet Vision installations are already configured!
-    echo All Database folders already contain Database_Name.txt files.
-    echo.
-    echo If you need to change an existing profile name, you can:
-    echo 1. Delete the Database_Name.txt file from the Database folder  
-    echo 2. Run this script again to set a new name
-    echo.
     pause
     exit /b
 )
 
-:: Handle different scenarios based on count
-if !count! equ 1 (
-    echo Found 1 installation that needs identifier files.
-    echo.
-    goto :GetProfileName
-) else (
-    echo Found !count! installations that need identifier files.
-    echo.
-    echo Multiple unconfigured installations found:
-    
-    :: List unconfigured installations for selection
-    set listCount=0
-    for /d %%i in ("%CVPath%\CV 20*") do (
-        if exist "%%i\Database" (
-            if not exist "%%i\Database\Database_Name.txt" (
-                set /a listCount+=1
-                set "unconfigured!listCount!=%%~nxi"
-                echo !listCount!. %%~nxi
-            )
+:: List unconfigured installations for selection
+echo Select which installation to configure:
+echo.
+set listCount=0
+for /d %%i in ("%CVPath%\CV 20*") do (
+    if exist "%%i\Database" (
+        if not exist "%%i\Database\Database_Name.txt" (
+            set /a listCount+=1
+            set "option!listCount!=%%~nxi"
+            echo !listCount!. %%~nxi
         )
     )
-    
-    echo.
-    set /p selection=Select which installation to configure (1-!listCount!) or press Enter to cancel: 
-    
-    if "!selection!"=="" (
-        echo Cancelled.
-        pause
-        exit /b
-    )
-    
-    :: Validate selection
-    if !selection! lss 1 goto :InvalidSelection
-    if !selection! gtr !listCount! goto :InvalidSelection
-    
-    set "SelectedInstallation=!unconfigured%selection%!"
-    echo.
-    echo Selected: !SelectedInstallation!
-    echo.
-    goto :GetProfileName
 )
 
-:InvalidSelection
-echo Invalid selection!
-pause
-exit /b
+echo.
+set /p selection=Enter number (1-!listCount!) or press Enter to cancel: 
+
+if "%selection%"=="" (
+    echo Cancelled.
+    pause
+    exit /b
+)
+
+:: Get the selected installation
+if "%selection%"=="1" set "SelectedInstallation=!option1!"
+if "%selection%"=="2" set "SelectedInstallation=!option2!"
+if "%selection%"=="3" set "SelectedInstallation=!option3!"
+if "%selection%"=="4" set "SelectedInstallation=!option4!"
+if "%selection%"=="5" set "SelectedInstallation=!option5!"
+
+if not defined SelectedInstallation (
+    echo Invalid selection!
+    pause
+    exit /b
+)
 
 :GetProfileName
 
@@ -126,13 +109,6 @@ if "%profileName%"=="" (
     exit /b
 )
 
-:: Validate profile name (no special characters that would break folder names)
-echo %profileName% | findstr /R /C:"[<>:\"/\\|?*]" >nul
-if not errorlevel 1 (
-    echo Profile name contains invalid characters. Please use letters, numbers, spaces, and hyphens only.
-    pause
-    exit /b
-)
 
 :: Show what will be set up for selected installation
 echo.
@@ -202,18 +178,6 @@ if errorlevel 1 (
     echo   ✓ Created Database_Name.txt with "%profileName%"
 )
 
-:: Set SQL permissions on existing database files
-echo   Setting SQL permissions on database files...
-for %%f in ("!versionPath!\Database\*.mdf" "!versionPath!\Database\*.ldf" "!versionPath!\Database\*.ndf") do (
-    if exist "%%f" (
-        icacls "%%f" /grant Everyone:F /Q >nul 2>&1
-        if errorlevel 1 (
-            echo   Warning: Could not set permissions on %%~nxf
-        ) else (
-            echo   ✓ Set permissions on %%~nxf
-        )
-    )
-)
 
 :: Handle Common folder if exists and unconfigured
 set "commonPath=%CVPath%\!TargetInstallation:CV =Common !"
@@ -227,18 +191,6 @@ if exist "!commonPath!\Database" (
             echo   ERROR: Failed to create Common identifier file
         ) else (
             echo   ✓ Created Common Database_Name.txt
-        )
-        
-        :: Set permissions on Common database files
-        for %%f in ("!commonPath!\Database\*.mdf" "!commonPath!\Database\*.ldf" "!commonPath!\Database\*.ndf") do (
-            if exist "%%f" (
-                icacls "%%f" /grant Everyone:F /Q >nul 2>&1
-                if errorlevel 1 (
-                    echo   Warning: Could not set Common permissions on %%~nxf
-                ) else (
-                    echo   ✓ Set Common permissions on %%~nxf
-                )
-            )
         )
     )
 )
@@ -255,18 +207,6 @@ if exist "!s2mPath!\Database" (
             echo   ERROR: Failed to create S2M identifier file
         ) else (
             echo   ✓ Created S2M Database_Name.txt
-        )
-        
-        :: Set permissions on S2M database files
-        for %%f in ("!s2mPath!\Database\*.mdf" "!s2mPath!\Database\*.ldf" "!s2mPath!\Database\*.ndf") do (
-            if exist "%%f" (
-                icacls "%%f" /grant Everyone:F /Q >nul 2>&1
-                if errorlevel 1 (
-                    echo   Warning: Could not set S2M permissions on %%~nxf
-                ) else (
-                    echo   ✓ Set S2M permissions on %%~nxf
-                )
-            )
         )
     )
 )
@@ -285,44 +225,12 @@ echo Profile "%profileName%" has been set up successfully.
 echo.
 echo What was created:
 echo - Database_Name.txt identifier file for the configured installation
-echo - SQL permissions set on existing database files
 echo - Common and S2M variants handled automatically
 echo.
 echo Next steps:
 echo 1. Run cv_switch.bat to see "%profileName%" as an available database option
-echo 2. To add new client databases: run prep_for_restore.bat → Restore CV → run this script again
+echo 2. To add new client databases: run prep_for_restore.bat -^> Restore CV -^> run this script again
 echo 3. The "%profileName%" database is now ready for the switcher system
 echo.
 echo Note: The configured database is now labeled as "%profileName%"
 echo      and ready to be managed with the database switcher.
-echo.
-
-:: Check if there are more unconfigured installations
-set remainingCount=0
-for /d %%i in ("%CVPath%\CV 20*") do (
-    if exist "%%i\Database" (
-        if not exist "%%i\Database\Database_Name.txt" (
-            set /a remainingCount+=1
-        )
-    )
-)
-
-if !remainingCount! gtr 0 (
-    echo.
-    echo There are !remainingCount! more unconfigured installation(s).
-    set /p configureMore=Configure another installation? (Y/N): 
-    if /i "!configureMore!"=="Y" (
-        echo.
-        echo Restarting to configure additional installation...
-        echo.
-        goto :StartOver
-    )
-)
-
-pause
-exit /b
-
-:StartOver
-echo.
-echo ===============================================
-goto :BeginScan

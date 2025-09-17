@@ -179,7 +179,7 @@ if /i not "%confirm%"=="Y" exit /b
 :: Export current registry settings
 echo.
 echo Saving registry settings...
-reg export "HKEY_CURRENT_USER\Software\Cabinet Vision\%SelectedVersion:CV =Solid_%" "%VersionPath%\Database\Settings.reg" /y >nul 2>&1
+reg export "HKEY_CURRENT_USER\Software\Hexagon\CABINET VISION\%SelectedVersion%\Settings" "%VersionPath%\Database\Settings.reg" /y >nul 2>&1
 
 :: Perform the switch
 echo Switching databases...

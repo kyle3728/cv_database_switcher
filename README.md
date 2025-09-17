@@ -2,6 +2,8 @@
 
 A suite of 3 batch files that manages Cabinet Vision databases using the proven folder-rename method.
 
+📖 **[Technical Background - How and Why This Works](docs/Database_Switcher_Technical_Background.md)**
+
 ## Features
 - Terminal menu system (no GUI needed)
 - Auto-detects all CV versions (2023/2024/2025)

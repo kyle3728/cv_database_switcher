@@ -1,20 +1,42 @@
-# CV Database Switcher - Simple Terminal Version
+# CV Database Switcher - Unified Manager
 
-A suite of 3 batch files that manages Cabinet Vision databases using the proven folder-rename method.
+**NEW: Single unified `cv_manager.bat` combines all functionality with intelligent detection and suggestions!**
+
+A comprehensive database management system for Cabinet Vision using the proven folder-rename method.
 
 📖 **[Technical Background - How and Why This Works](docs/Database_Switcher_Technical_Background.md)**
 
 ## Features
+
+### Unified Manager (`cv_manager.bat`)
+- **Single entry point** - One script for all operations
+- **Intelligent detection** - Automatically finds unconfigured databases and mismatches
+- **Mismatch warnings** - Alerts when CV/Common/S2M databases don't match
+- **Built-in help** - Detailed explanations of each option
+- **Guided workflows** - Step-by-step assistance for complex operations
+
+### Core Capabilities
 - Terminal menu system (no GUI needed)
 - Auto-detects all CV versions (2023/2024/2025)
 - Shows available database profiles
 - Process safety check (won't run if CV is open)
 - Registry settings preserved between switches
 - Synchronizes CV, Common, and S2M databases
-- Audit logging
+- Audit logging with viewer
 - Automatic UpdateDatabase run for compatibility
 
-## Setup
+## Quick Start
+
+### Using the Unified Manager (Recommended)
+
+1. **Run the Manager**:
+   - Run `cv_manager.bat` as administrator
+   - The script will analyze your system and suggest actions
+   - All operations available from one menu
+
+**Note**: If Cabinet Vision databases are not in the default location (`C:\ProgramData\Hexagon\CABINET VISION`), edit line 11 of `cv_manager.bat` to match your database path (not the program files path).
+
+### Using Individual Scripts (Legacy)
 
 1. **Set up Database Identifiers** (First Time):
    - Run `bat files/setup_identifiers.bat` as administrator
@@ -22,108 +44,108 @@ A suite of 3 batch files that manages Cabinet Vision databases using the proven 
    - Script handles SQL permissions and creates identifier files automatically
 
 2. **Run the Switcher**:
-   - Run `bat files/cv_switch.bat` as administrator  
+   - Run `bat files/cv_switch.bat` as administrator
    - Follow the numbered menu prompts
 
-## Usage Example
+## Usage Example - Unified Manager
 
 ```
-Cabinet Vision Database Switcher / Dashboard
-============================================
+Cabinet Vision Database Manager v2.0
+=====================================
 
+System Status:
+  CV versions found: 3
+  Total database profiles: 5
+  WARNING: 1 unconfigured database(s)
+  WARNING: 2 database mismatch(es)
+
+=====================================
+
+Main Menu:
+
+1. Dashboard and Switch Databases
+2. Setup New Database
+3. Prepare for New Client Import
+4. View Audit Log
+5. Help
+6. Exit
+
+Select option (1-6): 1
+```
+
+When selecting option 1 (Dashboard and Switch), you'll see:
+
+```
 Current Database Status:
 
   CV 2023: [Internal]
-  CV 2024: [Testing]
-  CV 2025: [Acme] (WARNING: Common:Testing S2M:Production )
-
-============================================
+  CV 2024: [Testing] (WARNING: Common:Acme S2M:Production)
+  CV 2025: [Unconfigured]
 
 Select CV Version to switch database:
-  (or press Enter to exit if just checking status)
+  (or press Enter to return to main menu)
 
 1. CV 2023 (currently: Internal)
 2. CV 2024 (currently: Testing)
-3. CV 2025 (currently: Acme)
+3. CV 2025 (currently: Unconfigured)
 
-Enter number (or press Enter to exit): 2
-
-Current Database: [Testing]
-
-Available Databases:
-1. Acme
-2. Internal
-3. Production
-
-Select database to switch to: 1
-
-========================================
-Switching from: [Testing]
-           to: [Acme]
-    Version: CV 2024
-========================================
-
-Continue? (Y/N): Y
-
-Saving registry settings...
-Switching databases...
-Switching Common database...
-Switching S2M database...
-Restoring registry settings...
-
-========================================
-Database switch successful!
-Now using: [Acme]
-========================================
-
-Starting UpdateDatabase...
+Enter number: 2
 ```
 
-### Dashboard-Only Mode
+### Key Features in the Unified Manager
 
-Just press Enter at the version selection to exit after viewing the current status - perfect for quickly checking which databases are active without making any changes.
+**Smart Detection**: The manager automatically detects:
+- Unconfigured databases needing setup
+- Database mismatches between CV/Common/S2M
+- Running CV processes that could cause conflicts
 
-### Mismatch Warnings
-
-If Common or S2M databases don't match the main CV database, you'll see warnings like:
-- `(WARNING: Common:Testing S2M:Production )` - Shows which databases are out of sync
-- This helps identify when database folders got switched independently
+**Mismatch Warnings**: When databases aren't synchronized:
+- Shows warnings in the dashboard display
+- Indicates which databases don't match (e.g., Common:Testing S2M:Production)
+- Solution: Use Option 1 to properly switch to the desired database
 
 ### Adding New Clients via Restore CV
 
-When importing a new client database using Restore CV (which overwrites existing databases):
+The unified manager streamlines the import process:
 
-1. **Before restoring**: Run `bat files/prep_for_restore.bat`
+1. **Using cv_manager.bat**: Select option 3 (Prepare for Client Import)
    - Shows all CV versions with current database status
    - Select which specific version to prepare for import
-   - Preserves selected version's database safely (others remain untouched)
+   - Preserves selected version's database safely
    - Creates empty Database folder for Restore CV to overwrite
 
 2. **Restore the new client**: Use "Restore CV [Version] Settings" from Start Menu
    - Import your client backup as normal
    - It will overwrite the empty folder (safely)
 
-3. **Complete setup**: Run `bat files/setup_identifiers.bat`
-   - Automatically detects the newly imported database
+3. **Complete setup**: Return to cv_manager.bat, select option 2 (Setup New Database)
+   - Manager detects the newly imported database automatically
    - Prompts for client name and creates identifier files
    - Sets SQL permissions on all database files
    - Handles CV, Common, and S2M databases
 
-4. **Start using**: Run `bat files/cv_switch.bat`
+4. **Start using**: Select option 1 to switch between databases
    - The new client appears in the switcher immediately
    - Switch between clients as normal
 
-**Complete workflow**: `prep_for_restore.bat` → Restore CV → `setup_identifiers.bat` → Done!
+**Complete workflow**: Option 3 → Restore CV → Option 2 → Done!
 
 This prevents losing existing database profiles while allowing selective preparation of just the CV version you want to import into.
 
 ## Improvements over Original
 
-Based on Tristan's proven approach with minimal additions:
+### Unified Manager Benefits
+- **Single file solution** - No need to remember which script to run
+- **Intelligent guidance** - Detects issues and shows appropriate warnings
+- **Built-in help** - Option 5 explains what each feature does
+- **Better workflow** - Seamlessly guides through complex operations
+
+### Technical Improvements
+Based on Tristan's proven folder-rename approach with:
 - Process checking (prevents corruption)
 - Dynamic version/database discovery (no hardcoding)
-- Clear confirmations
-- Error handling with rollback
-- Readable terminal interface
+- Clear confirmations and error handling with rollback
+- Readable terminal interface with status indicators
+- Comprehensive audit logging with built-in viewer
 
-Total: ~236 lines (vs 20 original, but much more flexible)
+**Code size**: Unified manager ~850 lines (combines 3 scripts totaling ~800 lines)

@@ -1,14 +1,12 @@
-# CV Database Switcher - Unified Manager
+# CV Database Manager
 
-**NEW: Single unified `cv_manager.bat` combines all functionality with intelligent detection and suggestions!**
-
-A comprehensive database management system for Cabinet Vision using the proven folder-rename method.
+A database management tool for Cabinet Vision that enables instant switching between databases. Essential for safely testing quarterly updates (2024.1, 2024.2, etc.) and managing multiple client configurations. Single `cv_manager.bat` file using the proven folder-rename method.
 
 📖 **[Technical Background - How and Why This Works](docs/Database_Switcher_Technical_Background.md)**
 
 ## Features
 
-### Unified Manager (`cv_manager.bat`)
+### `cv_manager.bat` Features
 - **Single entry point** - One script for all operations
 - **Intelligent detection** - Automatically finds unconfigured databases and mismatches
 - **Mismatch warnings** - Alerts when CV/Common/S2M databases don't match
@@ -27,8 +25,6 @@ A comprehensive database management system for Cabinet Vision using the proven f
 
 ## Quick Start
 
-### Using the Unified Manager (Recommended)
-
 1. **Run the Manager**:
    - Run `cv_manager.bat` as administrator
    - The script will analyze your system and suggest actions
@@ -36,18 +32,7 @@ A comprehensive database management system for Cabinet Vision using the proven f
 
 **Note**: If Cabinet Vision databases are not in the default location (`C:\ProgramData\Hexagon\CABINET VISION`), edit line 11 of `cv_manager.bat` to match your database path (not the program files path).
 
-### Using Individual Scripts (Legacy)
-
-1. **Set up Database Identifiers** (First Time):
-   - Run `bat files/setup_identifiers.bat` as administrator
-   - Enter a profile name for your current database (e.g., "Factory Reset", "Clean Install")
-   - Script handles SQL permissions and creates identifier files automatically
-
-2. **Run the Switcher**:
-   - Run `bat files/cv_switch.bat` as administrator
-   - Follow the numbered menu prompts
-
-## Usage Example - Unified Manager
+## Usage Example
 
 ```
 Cabinet Vision Database Manager v2.0
@@ -92,23 +77,28 @@ Select CV Version to switch database:
 Enter number: 2
 ```
 
-### Key Features in the Unified Manager
+### Common Use Cases
+
+**Testing Quarterly Updates (Most Common)**:
+Cabinet Vision releases quarterly updates (e.g., 2024.1, 2024.2) that overwrite the previous version. This tool lets you:
+- Keep your current working database safe before updating
+- Test the new quarterly release with a copy of your database
+- Instantly roll back if the update causes issues
+- Compare behavior between versions using the same data
+
+**Managing Multiple Client Databases**:
+- Work with different clients' custom databases
+- Switch between production and testing environments
+- Keep a clean "factory reset" database for troubleshooting
 
 **Smart Detection**: The manager automatically detects:
 - Unconfigured databases needing setup
 - Database mismatches between CV/Common/S2M
 - Running CV processes that could cause conflicts
 
-**Mismatch Warnings**: When databases aren't synchronized:
-- Shows warnings in the dashboard display
-- Indicates which databases don't match (e.g., Common:Testing S2M:Production)
-- Solution: Use Option 1 to properly switch to the desired database
-
 ### Adding New Clients via Restore CV
 
-The unified manager streamlines the import process:
-
-1. **Using cv_manager.bat**: Select option 3 (Prepare for Client Import)
+1. **Prepare for import**: Select option 3 (Prepare for New Client Import)
    - Shows all CV versions with current database status
    - Select which specific version to prepare for import
    - Preserves selected version's database safely
@@ -118,7 +108,7 @@ The unified manager streamlines the import process:
    - Import your client backup as normal
    - It will overwrite the empty folder (safely)
 
-3. **Complete setup**: Return to cv_manager.bat, select option 2 (Setup New Database)
+3. **Complete setup**: Return to the manager, select option 2 (Setup New Database)
    - Manager detects the newly imported database automatically
    - Prompts for client name and creates identifier files
    - Sets SQL permissions on all database files
@@ -132,20 +122,12 @@ The unified manager streamlines the import process:
 
 This prevents losing existing database profiles while allowing selective preparation of just the CV version you want to import into.
 
-## Improvements over Original
+## Technical Details
 
-### Unified Manager Benefits
-- **Single file solution** - No need to remember which script to run
-- **Intelligent guidance** - Detects issues and shows appropriate warnings
-- **Built-in help** - Option 5 explains what each feature does
-- **Better workflow** - Seamlessly guides through complex operations
-
-### Technical Improvements
 Based on Tristan's proven folder-rename approach with:
 - Process checking (prevents corruption)
 - Dynamic version/database discovery (no hardcoding)
 - Clear confirmations and error handling with rollback
 - Readable terminal interface with status indicators
 - Comprehensive audit logging with built-in viewer
-
-**Code size**: Unified manager ~850 lines (combines 3 scripts totaling ~800 lines)
+- Single file solution (~730 lines)

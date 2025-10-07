@@ -694,13 +694,14 @@ for %%f in ("%VPath%\Database\*.mdf" "%VPath%\Database\*.ldf") do (
     )
 )
 
-:: Capture current registry state for this new profile
-echo Capturing current registry settings for this profile...
-reg export "HKEY_CURRENT_USER\Software\Hexagon\CABINET VISION\%Installation%\Settings" "%VPath%\Database\Settings.reg" /y >nul 2>&1
-if exist "%VPath%\Database\Settings.reg" (
-    echo Registry settings captured successfully
-) else (
-    echo WARNING: Failed to capture registry settings
+:: Check if System Parameters exist for this profile
+reg query "HKEY_CURRENT_USER\Software\Hexagon\CABINET VISION\%Installation%\Settings" >nul 2>&1
+if errorlevel 1 (
+    echo.
+    echo WARNING: No System Parameters found in registry for %Installation%
+    echo This may indicate the imported backup did not include System Parameters.
+    echo The profile will work but may use default system variables.
+    echo.
 )
 
 :: Log the setup

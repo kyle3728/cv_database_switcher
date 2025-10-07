@@ -598,6 +598,7 @@ if exist "%S2MPath%\Database" (
 :: Import registry settings if available
 if exist "%VPath%\Database\Settings.reg" (
     echo Restoring registry settings...
+    reg delete "HKEY_CURRENT_USER\Software\Hexagon\CABINET VISION\%Version%\Settings" /f >nul 2>&1
     regedit /s "%VPath%\Database\Settings.reg"
 )
 
@@ -693,6 +694,15 @@ for %%f in ("%VPath%\Database\*.mdf" "%VPath%\Database\*.ldf") do (
     )
 )
 
+:: Capture current registry state for this new profile
+echo Capturing current registry settings for this profile...
+reg export "HKEY_CURRENT_USER\Software\Hexagon\CABINET VISION\%Installation%\Settings" "%VPath%\Database\Settings.reg" /y >nul 2>&1
+if exist "%VPath%\Database\Settings.reg" (
+    echo Registry settings captured successfully
+) else (
+    echo WARNING: Failed to capture registry settings
+)
+
 :: Log the setup
 echo %date% %time% ^| %username% ^| SETUP ^| %Installation% ^| %Profile% >> "%LogFile%"
 
@@ -776,6 +786,10 @@ if exist "%S2MPath%\Database" (
 del "%VPath%\Database\Database_Name.txt" >nul 2>&1
 del "%CommonPath%\Database\Database_Name.txt" >nul 2>&1
 del "%S2MPath%\Database\Database_Name.txt" >nul 2>&1
+
+:: Clean registry for fresh import (prevents stacking of mixed settings)
+echo Cleaning registry for fresh import...
+reg delete "HKEY_CURRENT_USER\Software\Hexagon\CABINET VISION\%Version%\Settings" /f >nul 2>&1
 
 :: Log the preparation
 echo %date% %time% ^| %username% ^| PREP ^| %Version% ^| %CurrentDb% >> "%LogFile%"

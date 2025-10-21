@@ -2,7 +2,11 @@
 
 A database management tool for Cabinet Vision that enables instant switching between databases. Essential for safely testing quarterly updates (2024.1, 2024.2, etc.) and managing multiple client configurations. Single `cv_manager.bat` file using the proven folder-rename method.
 
+**Open Source** • **Free to Use** • **Community Built**
+
 📖 **[Technical Background - How and Why This Works](docs/Database_Switcher_Technical_Background.md)**
+🙏 **[Credits & Attribution](CREDITS.md)** - Built on discoveries by Tristan R, Kevin (Valley Cabinet), and the CV community
+📄 **[MIT License](LICENSE)** - Free for personal and commercial use
 
 ## Features
 
@@ -131,3 +135,17 @@ Based on Tristan's proven folder-rename approach with:
 - Readable terminal interface with status indicators
 - Comprehensive audit logging with built-in viewer
 - Single file solution (~730 lines)
+
+## Credits & License
+
+This tool builds upon methods discovered and shared by the Cabinet Vision community:
+- **Tristan R** - Original database switching method and implementation (2020-2023)
+- **Kevin (Valley Cabinet)** - Version switching discovery (2023)
+- **John "Zeke" Charles** - Co-discoverer and technical insights
+- **The Cabinet Visionary (TCV)** - Historical context and validation
+
+**Implementation:** Kyle - [Nomadtek Consulting](https://nomadtekconsulting.com)
+
+See [CREDITS.md](CREDITS.md) for detailed attribution.
+
+Released under the [MIT License](LICENSE) - free for personal and commercial use.

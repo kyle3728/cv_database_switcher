@@ -1,0 +1,23 @@
+# Private research materials - not for public distribution
+docs/Forum Discussions/
+docs/archive/
+
+# HTML extracted documentation (if present)
+HTML_Extracted/
+
+# Log files
+*.log
+switch-log.txt
+
+# Personal notes and configurations
+notes/
+*.local
+
+# Windows system files
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.bak
+~*

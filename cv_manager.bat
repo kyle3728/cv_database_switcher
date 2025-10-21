@@ -3,7 +3,16 @@ setlocal enabledelayedexpansion
 
 :: Cabinet Vision Database Manager - Unified Edition
 :: Combines switching, setup, and import preparation into one intelligent interface
-:: Based on the proven folder-rename method discovered by the CV community
+::
+:: Developed by: Kyle - Nomadtek Consulting
+:: Website: https://nomadtekconsulting.com
+::
+:: Built on methods discovered by the Cabinet Vision community:
+::   - Database switching: Tristan R (2020-2023)
+::   - Version switching: Kevin / Valley Cabinet (2023)
+::
+:: See CREDITS.md for full attribution
+:: Released under MIT License - free for personal and commercial use
 
 :: ========================================
 :: SHARED CONFIGURATION
@@ -595,10 +604,13 @@ if exist "%S2MPath%\Database" (
     ren "%S2MPath%\Database - %New%" "Database" 2>nul
 )
 
-:: Import registry settings if available
+:: Always clean registry when switching profiles to prevent contamination
+echo Cleaning registry for profile switch...
+reg delete "HKEY_CURRENT_USER\Software\Hexagon\CABINET VISION\%Version%\Settings" /f >nul 2>&1
+
+:: Import registry settings if available for new profile
 if exist "%VPath%\Database\Settings.reg" (
     echo Restoring registry settings...
-    reg delete "HKEY_CURRENT_USER\Software\Hexagon\CABINET VISION\%Version%\Settings" /f >nul 2>&1
     regedit /s "%VPath%\Database\Settings.reg"
 )
 

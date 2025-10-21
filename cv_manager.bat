@@ -604,6 +604,23 @@ if exist "%S2MPath%\Database" (
     ren "%S2MPath%\Database - %New%" "Database" 2>nul
 )
 
+:: Switch Default.dat (layer schedules and dimension styles - Cabinet module)
+if exist "%VPath%\Default.dat" (
+    echo Switching layer settings...
+    ren "%VPath%\Default.dat" "Default - %Current%.dat" 2>nul
+)
+if exist "%VPath%\Default - %New%.dat" (
+    ren "%VPath%\Default - %New%.dat" "Default.dat" 2>nul
+)
+
+:: Switch DefaultCLST.dat (layer schedules and dimension styles - Closet module)
+if exist "%VPath%\DefaultCLST.dat" (
+    ren "%VPath%\DefaultCLST.dat" "DefaultCLST - %Current%.dat" 2>nul
+)
+if exist "%VPath%\DefaultCLST - %New%.dat" (
+    ren "%VPath%\DefaultCLST - %New%.dat" "DefaultCLST.dat" 2>nul
+)
+
 :: Always clean registry when switching profiles to prevent contamination
 echo Cleaning registry for profile switch...
 reg delete "HKEY_CURRENT_USER\Software\Hexagon\CABINET VISION\%Version%\Settings" /f >nul 2>&1

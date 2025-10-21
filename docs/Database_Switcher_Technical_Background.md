@@ -30,6 +30,8 @@ This evolved into today's 800+ line implementation with critical improvements:
 - Process checking to prevent corruption if CV is running
 - Automatic detection of all CV versions
 - Synchronization of Common and S2M databases
+- Switching of layer/dimension style files (Default.dat, DefaultCLST.dat)
+- Complete registry isolation (delete before import to prevent contamination)
 - Error handling and rollback capabilities
 - Database identification files
 - Audit logging
@@ -84,61 +86,65 @@ This is critical because databases from different clients or time periods may ha
 
 Without UpdateVersion, switched databases may appear to work but fail when accessing certain features.
 
-## The Three Scripts
+## The Unified Manager
 
-### cv_switch.bat (Main Switcher)
-Provides the interactive switching interface:
-- Displays dashboard showing all CV versions and current databases
+### cv_manager.bat
+A single, integrated script providing all database management functionality through an interactive menu system:
+
+**Core Features:**
+- Dashboard showing all CV versions and current databases
 - Detects mismatches between CV, Common, and S2M databases
 - Prevents switching if CV is running
-- Performs the folder renaming operations
+- Performs folder renaming operations for all three database types
 - Handles registry backup/restore
 - Launches UpdateVersion automatically
-- Logs all operations
+- Comprehensive audit logging with built-in viewer
 
-### setup_identifiers.bat (Database Configuration)
-Sets up new databases for the switching system:
-- Creates Database_Name.txt identifier files
-- Sets SQL permissions on database files
-- Handles all three database types (CV, Common, S2M)
-- Used after importing new databases or fresh installs
+**Main Menu Options:**
 
-### prep_for_restore.bat (Import Preparation)
-Prepares for importing new client databases via Restore CV:
-- Preserves current database by copying it
-- Handles selective version preparation
-- Sets SQL permissions on backed-up files
-- Removes old identifiers for clean import
+1. **Dashboard and Switch Databases** - View status and switch between database profiles
+2. **Setup New Database** - Configure newly imported or created databases
+3. **Prepare for New Client Import** - Prepare for importing via Restore CV utility
+4. **View Audit Log** - Review history of all database operations
+5. **Help** - Detailed guidance for each operation
+
+**Intelligent Detection:**
+- Automatically finds all CV versions (2023/2024/2025)
+- Detects unconfigured databases needing setup
+- Warns about database mismatches between CV/Common/S2M
+- Shows system status and suggests appropriate actions
 
 ## Workflow Examples
 
 ### Adding a New Client Database
 
-1. **Prepare**: Run `prep_for_restore.bat`
-   - Select CV version to prepare
-   - Current database is copied to "Database - [Name]"
-   - Original Database folder left for Restore CV
+1. **Prepare**: Run `cv_manager.bat` → Option 3 (Prepare for New Client Import)
+   - Select which CV version to prepare
+   - Current database is preserved as "Database - [Name]"
+   - Empty Database folder created for Restore CV to overwrite
 
-2. **Import**: Use Restore CV from Start Menu
-   - Import client's backup file
-   - Overwrites the Database folder
+2. **Import**: Use "Restore CV [Version] Settings" from Windows Start Menu
+   - Import client's backup file as normal
+   - Overwrites the empty Database folder
 
-3. **Configure**: Run `setup_identifiers.bat`
-   - Name the new database
-   - Creates identifier files
-   - Sets SQL permissions
+3. **Configure**: Return to `cv_manager.bat` → Option 2 (Setup New Database)
+   - Manager automatically detects the newly imported database
+   - Enter client name for the database profile
+   - Script creates identifier files and sets SQL permissions
 
-4. **Use**: Run `cv_switch.bat` to switch between databases
+4. **Use**: `cv_manager.bat` → Option 1 to switch between databases anytime
 
 ### Daily Database Switching
 
-1. Run `cv_switch.bat` as administrator
-2. Select CV version (2023, 2024, or 2025)
-3. Choose target database from list
-4. Confirm switch
-5. Script handles:
-   - Registry save/restore
-   - Folder renaming for all three databases
+1. Run `cv_manager.bat` as administrator
+2. Manager displays system status and warnings (if any)
+3. Select Option 1 (Dashboard and Switch Databases)
+4. Select CV version and target database from list
+5. Confirm switch
+6. Manager automatically handles:
+   - Registry save/restore (with complete isolation via delete before import)
+   - Folder renaming for all three databases (CV/Common/S2M)
+   - Layer/dimension style file switching (Default.dat, DefaultCLST.dat)
    - UpdateVersion execution
    - Audit logging
 
@@ -152,6 +158,12 @@ Each database folder contains:
 - `psnc.accdb` - S2M CENTER catalogs
 - `Database_Name.txt` - Identifier file (added by setup script)
 - `Settings.reg` - Registry backup for this database
+
+Additionally, each CV version maintains profile-specific layer settings:
+- `Default.dat` - Layer schedules and dimension styles (Cabinet module)
+- `DefaultCLST.dat` - Layer schedules and dimension styles (Closet module)
+
+These files are switched along with databases to maintain complete profile isolation.
 
 ### Safety Features
 - **Process Checking**: Verifies CV isn't running before switching

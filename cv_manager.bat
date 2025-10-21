@@ -44,7 +44,7 @@ if not exist "%CVPath%" (
     echo ERROR: Cabinet Vision not found at default location:
     echo   %CVPath%
     echo.
-    echo If Cabinet Vision is installed elsewhere, please edit line 11 of this file
+    echo If Cabinet Vision is installed elsewhere, please edit line 20 of this file
     echo and change the CVPath to match your DATABASE location - not program files.
     echo.
     echo Example: set "CVPath=D:\Cabinet Vision"
@@ -528,7 +528,7 @@ echo OPTION 1: Dashboard and Switch Databases
 echo   - View current database status for all CV versions
 echo   - Switch between different database profiles
 echo   - Shows warnings if Common/S2M databases are mismatched
-echo   - Automatically runs UpdateDatabase after switching
+echo   - Automatically runs UpdateVersion after switching
 echo.
 echo OPTION 2: Setup New Database
 echo   - Configures databases that don't have identifier files
@@ -640,11 +640,11 @@ echo Database switch successful!
 echo Now using: [%New%]
 echo ========================================
 
-:: Run UpdateDatabase
+:: Run UpdateVersion
 set "ProgramPath=C:\Program Files\Hexagon\CABINET VISION\%Version%"
 if exist "%ProgramPath%\CVUpdateVersion.exe" (
     echo.
-    echo Starting UpdateDatabase...
+    echo Starting UpdateVersion...
     start "" "%ProgramPath%\CVUpdateVersion.exe"
 )
 

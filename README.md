@@ -25,7 +25,7 @@ A database management tool for Cabinet Vision that enables instant switching bet
 - Registry settings preserved between switches
 - Synchronizes CV, Common, and S2M databases
 - Audit logging with viewer
-- Automatic UpdateDatabase run for compatibility
+- Automatic UpdateVersion run for compatibility
 
 ## Quick Start
 
@@ -34,7 +34,7 @@ A database management tool for Cabinet Vision that enables instant switching bet
    - The script will analyze your system and suggest actions
    - All operations available from one menu
 
-**Note**: If Cabinet Vision databases are not in the default location (`C:\ProgramData\Hexagon\CABINET VISION`), edit line 11 of `cv_manager.bat` to match your database path (not the program files path).
+**Note**: If Cabinet Vision databases are not in the default location (`C:\ProgramData\Hexagon\CABINET VISION`), edit line 20 of `cv_manager.bat` to match your database path (not the program files path).
 
 ## Usage Example
 
@@ -134,7 +134,7 @@ Based on Tristan's proven folder-rename approach with:
 - Clear confirmations and error handling with rollback
 - Readable terminal interface with status indicators
 - Comprehensive audit logging with built-in viewer
-- Single file solution (~730 lines)
+- Single file solution (~830 lines)
 
 ## Credits & License
 

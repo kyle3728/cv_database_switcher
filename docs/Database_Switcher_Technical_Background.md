@@ -64,7 +64,7 @@ Cabinet Vision stores user preferences in the Windows Registry at:
 HKEY_CURRENT_USER\Software\Hexagon\CABINET VISION\CV [version]\Settings
 ```
 
-**Note for Legacy Versions**: Pre-2021 Cabinet Vision versions use a different registry path (`Software\Cabinet Vision\Solid_[version]`). If using older versions, update the registry path in cv_switch.bat line 182 accordingly.
+**Note for Legacy Versions**: Pre-2021 Cabinet Vision versions use a different registry path (`Software\Cabinet Vision\Solid_[version]`) instead of the modern path (`Software\Hexagon\CABINET VISION\[version]\Settings`). If using older CV versions, you'll need to update the registry paths in cv_manager.bat (lines 572, 626, 727, 822) to match the legacy format.
 
 Each database maintains its own registry export (Settings.reg) so when you switch databases, you also get the workspace configuration, preferences, and settings associated with that database.
 

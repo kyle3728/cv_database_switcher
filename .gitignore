@@ -2,9 +2,6 @@
 docs/Forum Discussions/
 docs/archive/
 
-# HTML extracted documentation (if present)
-HTML_Extracted/
-
 # Log files
 *.log
 switch-log.txt

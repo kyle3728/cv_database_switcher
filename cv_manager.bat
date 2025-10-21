@@ -621,11 +621,12 @@ if exist "%VPath%\DefaultCLST - %New%.dat" (
     ren "%VPath%\DefaultCLST - %New%.dat" "DefaultCLST.dat" 2>nul
 )
 
-:: Always clean registry when switching profiles to prevent contamination
-echo Cleaning registry for profile switch...
+:: Clean registry before import (reg imports MERGE, not replace - settings would accumulate without this)
+:: The outgoing profile's settings were already backed up above to Settings.reg
+echo Applying profile settings...
 reg delete "HKEY_CURRENT_USER\Software\Hexagon\CABINET VISION\%Version%\Settings" /f >nul 2>&1
 
-:: Import registry settings if available for new profile
+:: Import registry settings for incoming profile
 if exist "%VPath%\Database\Settings.reg" (
     echo Restoring registry settings...
     regedit /s "%VPath%\Database\Settings.reg"
@@ -817,8 +818,8 @@ del "%VPath%\Database\Database_Name.txt" >nul 2>&1
 del "%CommonPath%\Database\Database_Name.txt" >nul 2>&1
 del "%S2MPath%\Database\Database_Name.txt" >nul 2>&1
 
-:: Clean registry for fresh import (prevents stacking of mixed settings)
-echo Cleaning registry for fresh import...
+:: Clean registry for fresh import (reg imports merge - would mix old + new settings without this)
+echo Preparing for clean database import...
 reg delete "HKEY_CURRENT_USER\Software\Hexagon\CABINET VISION\%Version%\Settings" /f >nul 2>&1
 
 :: Log the preparation

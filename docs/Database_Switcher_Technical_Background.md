@@ -68,7 +68,12 @@ HKEY_CURRENT_USER\Software\Hexagon\CABINET VISION\CV [version]\Settings
 
 Each database maintains its own registry export (Settings.reg) so when you switch databases, you also get the workspace configuration, preferences, and settings associated with that database.
 
-**Registry Isolation**: To prevent settings contamination between profiles, the manager deletes the registry branch before importing each profile's settings. This ensures complete isolation - no mixing of parameters from different clients or database configurations. The setup process also checks for missing System Parameters during profile configuration, warning users when imported backups don't include these registry settings.
+**Registry Isolation**: Windows registry imports merge rather than replace - settings accumulate across imports. To prevent contamination between profiles, the switching process:
+1. **Exports current settings** to the outgoing database's Settings.reg (backup)
+2. **Deletes the Settings branch** to create a clean slate
+3. **Imports the incoming database's** Settings.reg file
+
+This ensures complete isolation - no mixing of parameters from different clients or database configurations. The setup process also checks for missing System Parameters during profile configuration, warning users when imported backups don't include these registry settings.
 
 ### UpdateVersion Integration
 

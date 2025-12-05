@@ -153,7 +153,7 @@ echo 1. Dashboard and Switch Databases
 echo 2. Setup New Database
 echo 3. Prepare for New Client Import
 echo 4. View Audit Log
-echo 5. Repair Permissions (all databases)
+echo 5. Repair Permissions
 echo 6. Help
 echo 7. Exit
 echo.
@@ -550,8 +550,8 @@ echo   - Tracks switches, setups, imports, and fixes
 echo   - Useful for troubleshooting and tracking changes
 echo.
 echo OPTION 5: Repair Permissions
-echo   - Reapplies file permissions on CV/Common/S2M databases
-echo   - Fixes "cannot open CVData" caused by copied files losing ACLs
+echo   - Reapplies file permissions on active CV/Common/S2M databases
+echo   - Fixes "cannot open CVData" errors caused by missing SQL Server permissions
 echo.
 echo NOTE: Database Mismatches
 echo   - If you see mismatch warnings in the dashboard
@@ -852,9 +852,9 @@ if !cvRunning!==1 (
     pause
     goto MainMenu
 )
-echo This will reapply file permissions to CV/Common/S2M databases
-echo (active and "Database - *" copies).
+echo This will reapply file permissions to active CV/Common/S2M databases.
 echo.
+set "repairChoice="
 set rcount=0
 for /d %%i in ("%CVPath%\CV 20*") do (
     set /a rcount+=1
@@ -869,10 +869,11 @@ if !rcount!==0 (
 )
 echo A. All versions
 echo.
+:RepairPrompt
 set /p repairChoice=Select version to repair (1-!rcount! or A for all, Enter to cancel):
 if "%repairChoice%"=="" goto MainMenu
 if /i "%repairChoice%"=="A" (
-    set /p confirm=Repair ALL versions? (Y/N):
+    set /p confirm=Repair ALL versions? ^(Y/N^):
     if /i not "%confirm%"=="Y" goto MainMenu
     echo.
     call :RepairAll
@@ -886,8 +887,7 @@ set "selectedRepair=!repairOption%repairChoice%!"
 if not defined selectedRepair (
     echo Invalid selection!
     echo.
-    pause
-    goto MainMenu
+    goto RepairPrompt
 )
 set /p confirm=Repair permissions for !selectedRepair!? (Y/N):
 if /i not "%confirm%"=="Y" goto MainMenu
@@ -914,24 +914,19 @@ if not exist "%repairPath%" goto :eof
 echo Processing %repairVersion%...
 call :ApplyAcl "%repairPath%"
 
-set "repairCommon=%CVPath%\%repairVersion%"
-set "repairCommon=!repairCommon:CV =Common !"
-if exist "!repairCommon!" call :ApplyAcl "!repairCommon!"
+set "repairCommonBase=%CVPath%\%repairVersion:CV =Common %"
+if exist "%repairCommonBase%" call :ApplyAcl "%repairCommonBase%"
 
-set "repairS2M=%CVPath%\%repairVersion%"
-set "repairS2M=!repairS2M:CV =S2M !"
-if exist "!repairS2M!" call :ApplyAcl "!repairS2M!"
+set "repairS2MBase=%CVPath%\%repairVersion:CV =S2M %"
+if exist "%repairS2MBase%" call :ApplyAcl "%repairS2MBase%"
 goto :eof
 
 :ApplyAcl
-:: Parameter: %1 = base path containing Database folders
+:: Parameter: %1 = base path containing Database folder
 set "basePath=%~1"
 if not exist "%basePath%\Database" goto :eof
-for /d %%d in ("%basePath%\Database" "%basePath%\Database - *") do (
-    if exist "%%d" (
-        for %%f in ("%%d\*.mdf" "%%d\*.ldf") do (
-            if exist "%%f" icacls "%%f" /grant Everyone:F /Q >nul 2>&1
-        )
-    )
+:: Process active Database folder only
+for %%f in ("%basePath%\Database\*.mdf" "%basePath%\Database\*.ldf") do (
+    if exist "%%f" icacls "%%f" /grant Everyone:F /Q >nul 2>&1
 )
 goto :eof

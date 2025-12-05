@@ -795,6 +795,9 @@ if exist "%CommonPath%\Database" (
     if not exist "%CommonPath%\Database - !commonDb!" (
         xcopy "%CommonPath%\Database" "%CommonPath%\Database - !commonDb!\" /E /I /H /Y /Q
         echo Copied Common database to "Database - !commonDb!"
+        for %%f in ("%CommonPath%\Database - !commonDb!\*.mdf" "%CommonPath%\Database - !commonDb!\*.ldf") do (
+            if exist "%%f" icacls "%%f" /grant Everyone:F /Q >nul 2>&1
+        )
     )
 )
 
@@ -810,6 +813,9 @@ if exist "%S2MPath%\Database" (
     if not exist "%S2MPath%\Database - !s2mDb!" (
         xcopy "%S2MPath%\Database" "%S2MPath%\Database - !s2mDb!\" /E /I /H /Y /Q
         echo Copied S2M database to "Database - !s2mDb!"
+        for %%f in ("%S2MPath%\Database - !s2mDb!\*.mdf" "%S2MPath%\Database - !s2mDb!\*.ldf") do (
+            if exist "%%f" icacls "%%f" /grant Everyone:F /Q >nul 2>&1
+        )
     )
 )
 

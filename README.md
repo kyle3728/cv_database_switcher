@@ -26,6 +26,7 @@ A database management tool for Cabinet Vision that enables instant switching bet
 - Synchronizes CV, Common, and S2M databases
 - Audit logging with viewer
 - Automatic UpdateVersion run for compatibility
+- Permission repair for database files
 
 ## Quick Start
 
@@ -56,10 +57,11 @@ Main Menu:
 2. Setup New Database
 3. Prepare for New Client Import
 4. View Audit Log
-5. Help
-6. Exit
+5. Repair Permissions
+6. Help
+7. Exit
 
-Select option (1-6): 1
+Select option (1-7): 1
 ```
 
 When selecting option 1 (Dashboard and Switch), you'll see:
@@ -134,7 +136,7 @@ Based on Tristan's proven folder-rename approach with:
 - Clear confirmations and error handling with rollback
 - Readable terminal interface with status indicators
 - Comprehensive audit logging with built-in viewer
-- Single file solution (~830 lines)
+- Single file solution (~932 lines)
 
 ## Credits & License
 
